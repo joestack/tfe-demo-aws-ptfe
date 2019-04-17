@@ -45,7 +45,7 @@ resource "null_resource" "provisioner" {
 
   provisioner "file" {
     source      = "${path.module}/ansible/inventory"
-    destination = "~/inventory"
+###    destination = "~/inventory"
 
     connection {
       type        = "ssh"
