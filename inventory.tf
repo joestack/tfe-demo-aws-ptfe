@@ -97,24 +97,24 @@ resource "null_resource" "cp_ansible" {
   }
 }
 
-#resource "null_resource" "ansible_run" {
-#  depends_on = ["null_resource.cp_ansible", "local_file.ansible_inventory", "aws_instance.web_nodes", "aws_route53_record.jumphost"]
-#
-#  triggers {
-#    always_run = "${timestamp()}"
-#  }
-#
-#  connection {
-#    type        = "ssh"
-#    host        = "${aws_instance.jumphost.public_ip}"
-#    user        = "${var.ssh_user}"
-#    private_key = "${var.id_rsa_aws}"
-#    insecure    = true
-#  }
-#
-#  provisioner "remote-exec" {
-#    inline = [
-#      "sleep 30 && ansible-playbook -i ~/inventory ~/ansible/playbook.yml ",
-#    ]
-#  }
-#}
+resource "null_resource" "ansible_run" {
+  depends_on = ["null_resource.cp_ansible", "local_file.ansible_inventory", "aws_instance.web_nodes", "aws_route53_record.jumphost"]
+
+  triggers {
+    always_run = "${timestamp()}"
+  }
+
+  connection {
+    type        = "ssh"
+    host        = "${aws_instance.jumphost.public_ip}"
+    user        = "${var.ssh_user}"
+    private_key = "${var.id_rsa_aws}"
+    insecure    = true
+  }
+
+  provisioner "remote-exec" {
+    inline = [
+      "sleep 30 && ansible-playbook --vault-password-file ~/.vault-password.txt -i ~/inventory ~/ansible/playbook.yml ",
+    ]
+  }
+}
