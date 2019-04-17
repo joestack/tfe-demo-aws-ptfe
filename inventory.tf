@@ -8,7 +8,7 @@ data "template_file" "ansible_masternode" {
       vars {
         node_name    = "${lookup(aws_instance.tfe_node.*.tags[count.index], "Name")}"
         ansible_user = "${var.ssh_user}"
-        extra        = "ansible_host=${element(aws_instance.tfe_node.*.private_ip,count.index)}"
+        extra        = "ansible_host=${element(aws_instance.tfe_node.*.public_ip,count.index)}"
       }
 
 }
