@@ -82,6 +82,35 @@ resource "aws_route_table_association" "tfe_subnet" {
 }
 
 # SECURITY GROUPS #
+
+# Jumphost
+resource "aws_security_group" "jumphost" {
+  name        = "${var.name}-jumphost-sg"
+  description = "Jumphost/Bastion servers"
+  vpc_id      = "${aws_vpc.joestack-vpc.id}"
+}
+
+resource "aws_security_group_rule" "jh-ssh" {
+  security_group_id = "${aws_security_group.jumphost.id}"
+  type              = "ingress"
+  from_port         = 22
+  to_port           = 22
+  protocol          = "tcp"
+  cidr_blocks       = ["0.0.0.0/0"]
+}
+
+resource "aws_security_group_rule" "jh-egress" {
+  security_group_id = "${aws_security_group.jumphost.id}"
+  type              = "egress"
+  from_port         = 0
+  to_port           = 0
+  protocol          = "-1"
+  cidr_blocks       = ["0.0.0.0/0"]
+}
+
+
+
+
 # TFE security group
 
 resource "aws_security_group" "tfe" {
