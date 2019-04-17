@@ -1,0 +1,17 @@
+---
+- name: Ensure GIT is installed
+  apt:
+    name={{ item }}
+    state=present
+  with_items:
+    - git
+
+- name: Clone letsencrypt
+  git:
+    repo: 'https://github.com/letsencrypt/letsencrypt.git'
+    dest: /home/ubuntu/letsencrypt
+
+- name:
+  shell: ./letsencrypt-auto certonly --standalone --agree-tos -m joern@hashicorp.com -d {{ inventory_hostname }} -n
+  args:
+    chdir: /home/ubuntu/letsencrypt/

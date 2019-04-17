@@ -21,6 +21,16 @@ variable "ssh_user" {
 
 variable "tfe_node_count" {
 }
+variable "tfe_password" {
+  
+}
+variable "tfe_encryption_key" {
+  
+}
+variable "tfe_rli_vault_password" {
+  
+}
+
 
 locals {
   modulus_az = "${length(split(",", join(", ",data.aws_availability_zones.available.names)))}"

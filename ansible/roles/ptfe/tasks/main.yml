@@ -1,0 +1,29 @@
+---
+- name: copy settings.json to host
+  template:
+    src: settings.json.j2
+    dest: /home/ubuntu/application-settings.json
+
+- name: copy replicated.conf to host
+  template:
+    src: replicated.conf.j2
+    #dest: /etc/default/replicated 
+    dest: /etc/replicated.conf 
+
+- name: copy licence file
+  copy:
+    src: license.rli
+    dest: /home/ubuntu/license.rli
+
+- name: Download pTFE
+  shell: curl -o install.sh https://install.terraform.io/ptfe/stable
+  args:
+    chdir: /home/ubuntu/
+
+- name: run pTFE install
+  shell: bash ./install.sh no-proxy private-address={{ ansible_eth0.ipv4.address }} public-address={{ hostvars[item].ansible_host }}
+  args:
+    chdir: /home/ubuntu/
+  with_items: "{{ groups.all }}"
+
+

@@ -32,35 +32,29 @@ resource "local_file" "ansible_inventory" {
 
 }
 
+data "template_file" "ansible_role_ptfe_vars" {
+  template = "${file("${path.module}/templates/ansible_role_ptfe_vars.tpl")}"
+
+    vars {
+      tfe_password        = "${var.tfe_password}"
+      tfe_encryption_key  = "${var.tfe_encryption_key}"
+    }
+}
+
+resource "local_file" "ansible_role_ptfe_vars" {    
+    depends_on = ["data.template_file.ansible_groups"]
+
+    content = "${data.template_file.ansible_role_ptfe_vars.rendered}"
+    filename = "${path.module}/ansible/roles/ptfe/vars/main.yml"
+}
+ 
 ##
 ## here we copy the local file to the jumphost
 ## using a "null_resource" to be able to trigger a file provisioner
 ##
-#resource "null_resource" "provisioner" {
-#  depends_on = ["local_file.ansible_inventory"]
-#
-#  triggers {
-#    always_run = "${timestamp()}"
-#  }
-#
-#  provisioner "file" {
-#    source      = "${path.module}/ansible/inventory"
-#    destination = "~/inventory"
-#
-#    connection {
-#      type        = "ssh"
-#      host        = "${aws_instance.jumphost.public_ip}"
-#      user        = "${var.ssh_user}"
-#      private_key = "${var.id_rsa_aws}"
-#      insecure    = true
-#    }
-#  }
-#}
 
 resource "null_resource" "cp_ansible" {
-#  depends_on = ["null_resource.provisioner"]
   depends_on = ["local_file.ansible_inventory"]
-
 
   triggers {
     always_run = "${timestamp()}"
