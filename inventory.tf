@@ -47,7 +47,30 @@ resource "local_file" "ansible_role_ptfe_vars" {
     content = "${data.template_file.ansible_role_ptfe_vars.rendered}"
     filename = "${path.module}/ansible/roles/ptfe/vars/main.yml"
 }
- 
+
+resource "null_resource" "cp_vault_password" {
+    depends_on = ["local_file.ansible_role_ptfe_vars"]
+
+    triggers {
+    always_run = "${timestamp()}"
+    }
+    
+    connection {
+      type        = "ssh"
+      host        = "${aws_instance.jumphost.public_ip}"
+      user        = "${var.ssh_user}"
+      private_key = "${var.id_rsa_aws}"
+      insecure    = true
+    }
+    provisioner "remote-exec" {
+    inline = [
+      "echo ${var.tfe_rli_vault_password} > ~/.vault-password.txt ",
+    ]
+  }
+  
+}
+
+
 ##
 ## here we copy the local file to the jumphost
 ## using a "null_resource" to be able to trigger a file provisioner
