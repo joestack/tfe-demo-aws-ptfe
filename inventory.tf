@@ -36,26 +36,26 @@ resource "local_file" "ansible_inventory" {
 ## here we copy the local file to the jumphost
 ## using a "null_resource" to be able to trigger a file provisioner
 ##
-resource "null_resource" "provisioner" {
-  depends_on = ["local_file.ansible_inventory"]
-
-  triggers {
-    always_run = "${timestamp()}"
-  }
-
-  provisioner "file" {
-    source      = "${path.module}/ansible/inventory"
-    destination = "~/inventory"
-
-    connection {
-      type        = "ssh"
-      host        = "${aws_instance.jumphost.public_ip}"
-      user        = "${var.ssh_user}"
-      private_key = "${var.id_rsa_aws}"
-      insecure    = true
-    }
-  }
-}
+#resource "null_resource" "provisioner" {
+#  depends_on = ["local_file.ansible_inventory"]
+#
+#  triggers {
+#    always_run = "${timestamp()}"
+#  }
+#
+#  provisioner "file" {
+#    source      = "${path.module}/ansible/inventory"
+#    destination = "~/inventory"
+#
+#    connection {
+#      type        = "ssh"
+#      host        = "${aws_instance.jumphost.public_ip}"
+#      user        = "${var.ssh_user}"
+#      private_key = "${var.id_rsa_aws}"
+#      insecure    = true
+#    }
+#  }
+#}
 
 resource "null_resource" "cp_ansible" {
   depends_on = ["null_resource.provisioner"]
