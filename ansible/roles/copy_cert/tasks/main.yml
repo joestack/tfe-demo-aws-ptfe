@@ -1,0 +1,6 @@
+---
+- name: transfer pre-created certificates to host
+  unarchive:
+    src: cert.tgz
+    decrypt: yes
+    dest: /etc/
