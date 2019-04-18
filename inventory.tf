@@ -97,6 +97,30 @@ resource "null_resource" "cp_ansible" {
   }
 }
 
+#encrypt licence and cert here before we run the playbook
+resource "null_resource" "encrypt_license" {
+  depends_on = ["local_file.ansible_inventory"]
+
+#  triggers {
+#    always_run = "${timestamp()}"
+#  }
+
+  provisioner "remote-exec" {
+    inline = [
+      "ansible-vault decrypt ~/ansible/role/ptfe/files/license.rli --vault-password-file ~/.vault-password.txt",
+      "[ -e ~/ansible/roles/copy_cert/files/cert.tgz ] && ansible-vault decrypt ~/ansible/roles/copy_cert/files/cert.tgz --vault-password-file ~/.vault-password.txt"
+    ]
+  }
+    connection {
+      type        = "ssh"
+      host        = "${aws_instance.jumphost.public_ip}"
+      user        = "${var.ssh_user}"
+      private_key = "${var.id_rsa_aws}"
+      insecure    = true
+    }
+}
+
+
 resource "null_resource" "ansible_run" {
   depends_on = ["null_resource.cp_ansible", "local_file.ansible_inventory", "aws_instance.tfe_node", "aws_route53_record.jumphost"]
 
@@ -114,7 +138,7 @@ resource "null_resource" "ansible_run" {
 
   provisioner "remote-exec" {
     inline = [
-      "sleep 30 && ansible-playbook --vault-password-file ~/.vault-password.txt -i ~/ansible/inventory ~/ansible/playbook.yml ",
+      "sleep 30 && ansible-playbook -i ~/ansible/inventory ~/ansible/playbook.yml ",
     ]
   }
 }

@@ -12,7 +12,6 @@
 - name: copy licence file
   copy:
     src: license.rli
-    decrypt: yes
     dest: /home/ubuntu/license.rli
 
 #- name: Download pTFE
