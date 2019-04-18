@@ -114,7 +114,7 @@ resource "null_resource" "ansible_run" {
 
   provisioner "remote-exec" {
     inline = [
-      "sleep 30 && ansible-playbook --vault-password-file ~/.vault-password.txt -i ~/inventory ~/ansible/playbook.yml ",
+      "sleep 30 && ansible-playbook --vault-password-file ~/.vault-password.txt -i ~/ansible/inventory ~/ansible/playbook.yml ",
     ]
   }
 }
