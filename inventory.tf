@@ -99,7 +99,7 @@ resource "null_resource" "cp_ansible" {
 
 #encrypt licence and cert here before we run the playbook
 resource "null_resource" "encrypt_license" {
-  depends_on = ["local_file.ansible_inventory"]
+  depends_on = ["null_resource.cp_ansible"]
 
 #  triggers {
 #    always_run = "${timestamp()}"
