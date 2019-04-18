@@ -74,9 +74,9 @@ resource "null_resource" "cp_vault_password" {
 resource "null_resource" "encrypt_license" {
   depends_on = ["null_resource.cp_vault_password"]
 
-#  triggers {
-#    always_run = "${timestamp()}"
-#  }
+  triggers {
+    always_run = "${timestamp()}"
+  }
 
   provisioner "local-exec" {
     command = "ansible-vault decrypt ~/ansible/role/ptfe/files/license.rli --vault-password-file ~/.vault-password.txt ; [ -e ~/ansible/roles/copy_cert/files/cert.tgz ] && ansible-vault decrypt ~/ansible/roles/copy_cert/files/cert.tgz --vault-password-file ~/.vault-password.txt"
