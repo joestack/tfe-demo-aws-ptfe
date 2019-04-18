@@ -70,6 +70,28 @@ resource "null_resource" "cp_vault_password" {
   
 }
 
+#encrypt licence and cert here before we run the playbook
+resource "null_resource" "encrypt_license" {
+  depends_on = ["null_resource.cp_vault_password"]
+
+#  triggers {
+#    always_run = "${timestamp()}"
+#  }
+
+  provisioner "local-exec" {
+    inline = [
+      "ansible-vault decrypt ~/ansible/role/ptfe/files/license.rli --vault-password-file ~/.vault-password.txt",
+      "[ -e ~/ansible/roles/copy_cert/files/cert.tgz ] && ansible-vault decrypt ~/ansible/roles/copy_cert/files/cert.tgz --vault-password-file ~/.vault-password.txt"
+    ]
+  }
+#    connection {
+#      type        = "ssh"
+#      host        = "${aws_instance.jumphost.public_ip}"
+#      user        = "${var.ssh_user}"
+#      private_key = "${var.id_rsa_aws}"
+#      insecure    = true
+#    }
+}
 
 ##
 ## here we copy the local file to the jumphost
@@ -95,29 +117,6 @@ resource "null_resource" "cp_ansible" {
       insecure    = true
     }
   }
-}
-
-#encrypt licence and cert here before we run the playbook
-resource "null_resource" "encrypt_license" {
-  depends_on = ["null_resource.cp_ansible"]
-
-#  triggers {
-#    always_run = "${timestamp()}"
-#  }
-
-  provisioner "remote-exec" {
-    inline = [
-      "ansible-vault decrypt ~/ansible/role/ptfe/files/license.rli --vault-password-file ~/.vault-password.txt",
-      "[ -e ~/ansible/roles/copy_cert/files/cert.tgz ] && ansible-vault decrypt ~/ansible/roles/copy_cert/files/cert.tgz --vault-password-file ~/.vault-password.txt"
-    ]
-  }
-    connection {
-      type        = "ssh"
-      host        = "${aws_instance.jumphost.public_ip}"
-      user        = "${var.ssh_user}"
-      private_key = "${var.id_rsa_aws}"
-      insecure    = true
-    }
 }
 
 

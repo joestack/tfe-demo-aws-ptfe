@@ -7,4 +7,4 @@
 - name: transfer pre-created certificates to host
   copy:
     src: cert.tgz
-    dest: ~/
+    dest: /home/ubuntu/
