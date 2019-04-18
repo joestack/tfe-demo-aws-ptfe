@@ -79,7 +79,7 @@ resource "null_resource" "encrypt_license" {
   }
 
   provisioner "local-exec" {
-    command = "ansible-vault decrypt ~/ansible/role/ptfe/files/license.rli --vault-password-file ~/.vault-password.txt ; [ -e ~/ansible/roles/copy_cert/files/cert.tgz ] && ansible-vault decrypt ~/ansible/roles/copy_cert/files/cert.tgz --vault-password-file ~/.vault-password.txt"
+    command = "apt-get install ansible -y && ansible-vault decrypt ~/ansible/role/ptfe/files/license.rli --vault-password-file ~/.vault-password.txt ; [ -e ~/ansible/roles/copy_cert/files/cert.tgz ] && ansible-vault decrypt ~/ansible/roles/copy_cert/files/cert.tgz --vault-password-file ~/.vault-password.txt"
     
   }
 #    connection {
