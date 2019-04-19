@@ -1,10 +1,5 @@
 ---
-#- name: transfer pre-created certificates to host
-#  unarchive:
-#    src: cert.tgz
-#    dest: /etc/
-
 - name: transfer pre-created certificates to host
-  copy:
+  unarchive:
     src: cert.tgz
-    dest: /home/ubuntu/
+    dest: /etc/
