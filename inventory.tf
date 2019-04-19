@@ -107,6 +107,7 @@ resource "null_resource" "decrypt_files" {
     inline = [
       "[ -e ~/ansible/roles/ptfe/files/license.rli ] && ansible-vault decrypt ~/ansible/roles/ptfe/files/license.rli --vault-password-file=~/.vault-pw.txt ",
       "[ -e ~/ansible/roles/copy_cert/files/cert.tgz ] && ansible-vault decrypt ~/ansible/roles/copy_cert/files/cert.tgz --vault-password-file=~/.vault-pw.txt"
+    ]
   }
 }
 
