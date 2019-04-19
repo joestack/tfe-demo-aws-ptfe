@@ -41,7 +41,7 @@ resource "local_file" "ansible_role_ptfe_vars" {
 }
 
 resource "null_resource" "cp_vault_password" {
-    depends_on = ["local_file.ansible_role_ptfe_vars"]
+    depends_on = ["local_file.ansible_role_ptfe_vars", "aws_instance.tfe_node", "aws_route53_record.jumphost"]
 
     triggers {
     always_run = "${timestamp()}"
