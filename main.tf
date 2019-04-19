@@ -182,6 +182,7 @@ resource "aws_instance" "jumphost" {
               chown ubuntu /home/ubuntu/.ssh/id_rsa
               chgrp ubuntu /home/ubuntu/.ssh/id_rsa
               chmod 600 /home/ubuntu/.ssh/id_rsa
+              add-apt-repository ppa:ansible/ansible-2.6
               apt-get update -y
               apt-get install ansible -y 
               EOF
