@@ -14,15 +14,15 @@
     src: license.rli
     dest: /home/ubuntu/license.rli
 
-#- name: Download pTFE
-#  shell: curl -o install.sh https://install.terraform.io/ptfe/stable
-#  args:
-#    chdir: /home/ubuntu/
-#
-#- name: run pTFE install
-#  shell: bash ./install.sh no-proxy private-address={{ ansible_eth0.ipv4.address }} public-address={{ hostvars[item].ansible_host }}
-#  args:
-#    chdir: /home/ubuntu/
-#  with_items: "{{ groups.all }}"
+- name: Download pTFE
+  shell: curl -o install.sh https://install.terraform.io/ptfe/stable
+  args:
+    chdir: /home/ubuntu/
+
+- name: run pTFE install
+  shell: bash ./install.sh no-proxy private-address={{ ansible_eth0.ipv4.address }} public-address={{ hostvars[item].ansible_host }}
+  args:
+    chdir: /home/ubuntu/
+  with_items: "{{ groups.all }}"
 
 
