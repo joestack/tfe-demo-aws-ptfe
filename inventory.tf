@@ -88,9 +88,30 @@ resource "null_resource" "cp_ansible" {
   }
 }
 
+resource "null_resource" "decrypt_files" {
+  depends_on = ["null_resource.cp_ansible"]
+  
+  triggers {
+    always_run = "${timestamp()}"
+  }
+
+  connection {
+    type        = "ssh"
+    host        = "${aws_instance.jumphost.public_ip}"
+    user        = "${var.ssh_user}"
+    private_key = "${var.id_rsa_aws}"
+    insecure    = true
+  }
+
+  provisioner "remote-exec" {
+    inline = [
+      "[ -e ~/ansible/roles/ptfe/files/license.rli ] && ansible-vault decrypt ~/ansible/roles/ptfe/files/license.rli --vault-password-file=~/.vault-pw.txt ",
+      "[ -e ~/ansible/roles/copy_cert/files/cert.tgz ] && ansible-vault decrypt ~/ansible/roles/copy_cert/files/cert.tgz --vault-password-file=~/.vault-pw.txt"
+  }
+}
 
 resource "null_resource" "ansible_run" {
-  depends_on = ["null_resource.cp_ansible", "local_file.ansible_inventory", "aws_instance.tfe_node", "aws_route53_record.jumphost"]
+  depends_on = ["null_resource.decrypt_files"]
 
   triggers {
     always_run = "${timestamp()}"
@@ -106,7 +127,7 @@ resource "null_resource" "ansible_run" {
 
   provisioner "remote-exec" {
     inline = [
-      "sleep 30 && ansible-playbook --vault-id ~/.vault-pw.txt -i ~/ansible/inventory ~/ansible/playbook.yml ",
+      "sleep 30 && ansible-playbook -i ~/ansible/inventory ~/ansible/playbook.yml ",
     ]
   }
 }
