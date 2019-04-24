@@ -89,7 +89,7 @@ resource "null_resource" "cp_ansible" {
 }
 
 resource "null_resource" "decrypt_files" {
-  depends_on = ["null_resource.cp_ansible"]
+  depends_on = ["null_resource.cp_ansible", "null_resource.cp_vault_password"]
   
   triggers {
     always_run = "${timestamp()}"
@@ -105,6 +105,7 @@ resource "null_resource" "decrypt_files" {
 
   provisioner "remote-exec" {
     inline = [
+      "sleep 10",
       "[ -e ~/ansible/roles/ptfe/files/license.rli ] && ansible-vault decrypt ~/ansible/roles/ptfe/files/license.rli --vault-password-file=~/.vault-pw.txt ",
       "[ -e ~/ansible/roles/copy_cert/files/cert.tgz ] && ansible-vault decrypt ~/ansible/roles/copy_cert/files/cert.tgz --vault-password-file=~/.vault-pw.txt"
     ]
