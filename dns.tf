@@ -7,7 +7,8 @@ data "aws_route53_zone" "selected" {
 
 resource "aws_route53_record" "jumphost" {
   zone_id = "${data.aws_route53_zone.selected.zone_id}"
-  name    = "${lookup(aws_instance.jumphost.*.tags[0], "Name")}"
+#  name    = "${lookup(aws_instance.jumphost.*.tags[0], "Name")}"
+  name    = "ptfejh"
 
   #name    = "jumphost"
   type    = "A"
