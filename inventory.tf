@@ -112,24 +112,24 @@ resource "null_resource" "decrypt_files" {
   }
 }
 
-resource "null_resource" "ansible_run" {
-  depends_on = ["null_resource.decrypt_files"]
-
-  triggers {
-    always_run = "${timestamp()}"
-  }
-
-  connection {
-    type        = "ssh"
-    host        = "${aws_instance.jumphost.public_ip}"
-    user        = "${var.ssh_user}"
-    private_key = "${var.id_rsa_aws}"
-    insecure    = true
-  }
-
-  provisioner "remote-exec" {
-    inline = [
-      "sleep 30 && ansible-playbook -i ~/ansible/inventory ~/ansible/playbook.yml ",
-    ]
-  }
-}
+#resource "null_resource" "ansible_run" {
+#  depends_on = ["null_resource.decrypt_files"]
+#
+#  triggers {
+#    always_run = "${timestamp()}"
+#  }
+#
+#  connection {
+#    type        = "ssh"
+#    host        = "${aws_instance.jumphost.public_ip}"
+#    user        = "${var.ssh_user}"
+#    private_key = "${var.id_rsa_aws}"
+#    insecure    = true
+#  }
+#
+#  provisioner "remote-exec" {
+#    inline = [
+#      "sleep 30 && ansible-playbook -i ~/ansible/inventory ~/ansible/playbook.yml ",
+#    ]
+#  }
+#}
